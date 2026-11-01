@@ -1,4 +1,4 @@
-// Reads the first frames of every video cut in the background when a project opens,
+// Reads the first frame of every video cut in the background when a project opens,
 // so the first playback does not stop at each join to open a file.
 // Times are written to a log file, because the host only saves errors to its own log files.
 #include <windows.h>
@@ -18,7 +18,7 @@
 #include "logger2.h"
 
 static const wchar_t* LINK_FOLDER = L"_カット別リンク";
-static const int FRAMES_PER_CUT = 3;
+static const int DEFAULT_FRAMES_PER_CUT = 1;
 static const int LOAD_DELAY_MS = 2000;
 
 enum Mode { PRELOAD, MEASURE };
@@ -42,6 +42,13 @@ static std::wstring data_path(const wchar_t* name) {
     if (!path.empty() && path.back() != L'\\')
         path += L'\\';
     return path + name;
+}
+
+// Frames kept for each cut, from AVIUTL2_PRELOAD_FRAMES when set
+static int frames_per_cut() {
+    wchar_t value[16] = {};
+    int frames = GetEnvironmentVariableW(L"AVIUTL2_PRELOAD_FRAMES", value, 16) ? _wtoi(value) : 0;
+    return frames > 0 ? frames : DEFAULT_FRAMES_PER_CUT;
 }
 
 static COMMON_PLUGIN_TABLE common_plugin_table = {
@@ -126,7 +133,7 @@ static void run(Mode mode, int delay_ms, unsigned request) {
     for (int cut : cuts) {
         double first = -1;
         // A measurement plays across the join, as playback does: the frame before it, then the new cut
-        for (int i = mode == PRELOAD ? 0 : -1; i < (mode == PRELOAD ? FRAMES_PER_CUT : 2); i++) {
+        for (int i = mode == PRELOAD ? 0 : -1; i < (mode == PRELOAD ? frames_per_cut() : 2); i++) {
             if (cancelled(request)) {
                 if (log) {
                     fprintf(log, "cancelled after %zu of %zu cuts\n", times.size(), cuts.size());
