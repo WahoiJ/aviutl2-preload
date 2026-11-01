@@ -1,0 +1,6 @@
+*.obj
+*.lib
+*.exp
+*.aux2
+*.log
+sdk/
