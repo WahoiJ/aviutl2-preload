@@ -10,8 +10,11 @@
 - **先読みの効果を計測(編集メニュー):** 継ぎ目の描画時間をログに記録します。
 
 ## 導入
-1. `aviutl2_preload.aux2` を `C:\ProgramData\aviutl2\Plugin` に置きます。
-2. AviUtl2を起動し直します。
+1. [Releases](https://github.com/WahoiJ/aviutl2-preload/releases/latest) からzipをダウンロードして展開します。
+2. `aviutl2_preload.aux2` を `C:\ProgramData\aviutl2\Plugin` に置きます。
+3. AviUtl2を起動し直します。
+
+AviUtl2はバージョン2003300以降が必要です(プラグインが要求する値)。
 
 次の設定も組み合わせると、ファイルを開き直す回数が減ります。
 
