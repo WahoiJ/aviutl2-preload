@@ -77,11 +77,17 @@ static void collect_cuts(void* param, EDIT_SECTION* edit) {
     EDIT_INFO info{};
     g_edit->get_edit_info(&info, sizeof(info));
     for (int layer = 0; layer <= info.layer_max; layer++) {
+        std::string last_file;
         OBJECT_HANDLE object = edit->find_object(layer, 0);
         while (object) {
             OBJECT_LAYER_FRAME place = edit->get_object_layer_frame(object);
-            if (edit->count_object_effect(object, L"動画ファイル") > 0)
-                cuts->push_back(place.start);
+            if (edit->count_object_effect(object, L"動画ファイル") > 0) {
+                // Objects in a row on one path share a decoder, which should wait at the first of them
+                const char* file = edit->get_object_item_value(object, L"動画ファイル", L"ファイル");
+                if (!file || last_file != file)
+                    cuts->push_back(place.start);
+                last_file = file ? file : "";
+            }
             object = edit->find_object(layer, place.end + 1);
         }
     }
