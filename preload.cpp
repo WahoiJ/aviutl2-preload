@@ -418,7 +418,7 @@ static void make_copies(unsigned request) {
     if (!swap.to.empty() && !g_edit->call_edit_section_param(&swap, swap_files))
         return;
     double seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - started).count();
-    swprintf(message, 600, L"編集用コピー: %d 本を作成(失敗 %d 本、%.0f 秒)、%d 個のオブジェクトを差し替えました。書き出す前に「元の動画に戻す」を実行してください", made, missed, seconds, swap.changed);
+    swprintf(message, 600, L"編集用コピー: %d 本を作成(失敗 %d 本、%.0f 秒)、%d 個のオブジェクトを差し替えました。書き出しもこのままで構いません", made, missed, seconds, swap.changed);
     say(message);
 }
 
